@@ -5,7 +5,7 @@
         <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="9529"/>
     </dependencies>
     <scenes>
-        <!--Item 2-->
+        <!--Top Rated-->
         <scene sceneID="zS0-2C-d2Q">
             <objects>
                 <viewController id="LEF-Qz-N81" customClass="TopRatedController" customModule="Flicks" customModuleProvider="target" sceneMemberID="viewController">
@@ -17,19 +17,19 @@
                                 <rect key="frame" x="121" y="240" width="78" height="21"/>
                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                 <fontDescription key="fontDescription" type="system" pointSize="17"/>
-                                <color key="textColor" cocoaTouchSystemColor="darkTextColor"/>
+                                <color key="textColor" red="0.0" green="0.0" blue="0.0" alpha="1" colorSpace="calibratedRGB"/>
                                 <nil key="highlightedColor"/>
                             </label>
                         </subviews>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                     </view>
-                    <tabBarItem key="tabBarItem" title="Item 2" id="3DH-H5-Gsh" userLabel="Top Rated"/>
+                    <tabBarItem key="tabBarItem" title="Top Rated" image="Rating" selectedImage="Rating" id="3DH-H5-Gsh" userLabel="Top Rated"/>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="UzB-g4-5od" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
             <point key="canvasLocation" x="-950" y="428"/>
         </scene>
-        <!--Item 1-->
+        <!--Now Playing-->
         <scene sceneID="wye-Dj-5jb">
             <objects>
                 <viewController id="3jT-2q-2Zk" customClass="NowPlayingController" customModule="Flicks" customModuleProvider="target" sceneMemberID="viewController">
@@ -37,17 +37,28 @@
                         <rect key="frame" x="0.0" y="0.0" width="320" height="568"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
-                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Now Playing" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" id="udS-eM-nRl">
-                                <rect key="frame" x="74" y="226" width="94" height="21"/>
+                            <tableView clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="plain" separatorStyle="default" rowHeight="44" sectionHeaderHeight="28" sectionFooterHeight="28" id="2gz-WW-W1K">
+                                <rect key="frame" x="0.0" y="0.0" width="320" height="519"/>
                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
-                                <fontDescription key="fontDescription" type="system" pointSize="17"/>
-                                <color key="textColor" cocoaTouchSystemColor="darkTextColor"/>
-                                <nil key="highlightedColor"/>
-                            </label>
+                                <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                                <prototypes>
+                                    <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" selectionStyle="default" indentationWidth="10" reuseIdentifier="NowPlayingCell" id="Ie6-DN-Etq">
+                                        <rect key="frame" x="0.0" y="28" width="320" height="44"/>
+                                        <autoresizingMask key="autoresizingMask"/>
+                                        <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="Ie6-DN-Etq" id="XUY-7B-Zu0">
+                                            <rect key="frame" x="0.0" y="0.0" width="320" height="43.5"/>
+                                            <autoresizingMask key="autoresizingMask"/>
+                                        </tableViewCellContentView>
+                                    </tableViewCell>
+                                </prototypes>
+                            </tableView>
                         </subviews>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                     </view>
-                    <tabBarItem key="tabBarItem" title="Item 1" id="FJC-OX-ZW4" userLabel="Now Playing"/>
+                    <tabBarItem key="tabBarItem" title="Now Playing" image="Movie" selectedImage="Movie" id="FJC-OX-ZW4" userLabel="Now Playing"/>
+                    <connections>
+                        <outlet property="nowPlayingTableView" destination="2gz-WW-W1K" id="7ul-4H-sQP"/>
+                    </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="t6u-WJ-cus" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
@@ -86,4 +97,8 @@
             <point key="canvasLocation" x="162.66666666666666" y="352.63333333333333"/>
         </scene>
     </scenes>
+    <resources>
+        <image name="Movie" width="24" height="24"/>
+        <image name="Rating" width="24" height="24"/>
+    </resources>
 </document>
