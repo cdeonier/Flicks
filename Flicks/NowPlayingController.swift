@@ -1,4 +1,5 @@
 import UIKit
+import AFNetworking
 
 class NowPlayingController: UIViewController, UITableViewDataSource, UITableViewDelegate {
     
@@ -11,7 +12,9 @@ class NowPlayingController: UIViewController, UITableViewDataSource, UITableView
         
         nowPlayingTableView.delegate = self
         nowPlayingTableView.dataSource = self
-        
+    }
+    
+    override func viewDidAppear(animated: Bool) {
         Movie.nowPlaying({ (movies: [Movie]) -> Void in
             self.movies = movies
             self.nowPlayingTableView.reloadData()
@@ -30,9 +33,13 @@ class NowPlayingController: UIViewController, UITableViewDataSource, UITableView
     }
     
     func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
-        let cell = tableView.dequeueReusableCellWithIdentifier("NowPlayingCell", forIndexPath: indexPath)
-        let title = movies[indexPath.row].title
-        cell.textLabel?.text = title
+        let cell = tableView.dequeueReusableCellWithIdentifier("NowPlayingCell", forIndexPath: indexPath) as! MovieCell
+        
+        let movie = movies[indexPath.row]
+        cell.title.text = movie.title
+        cell.overview.text = movie.overview
+        cell.posterImage.setImageWithURL(movie.posterUrl())
+        
         return cell
     }
 }
