@@ -2,9 +2,10 @@ import UIKit
 import AFNetworking
 import SVProgressHUD
 
-class MoviesController: UIViewController, UITableViewDataSource, UITableViewDelegate, UISearchBarDelegate {
+class MoviesController: UIViewController, UITableViewDataSource, UITableViewDelegate, UISearchBarDelegate, UICollectionViewDataSource, UICollectionViewDelegate {
     
     @IBOutlet weak var tableView: UITableView!
+    @IBOutlet weak var collectionView: UICollectionView!
     var searchBar: UISearchBar!
     
     var nowPlaying: Bool = false
@@ -18,6 +19,7 @@ class MoviesController: UIViewController, UITableViewDataSource, UITableViewDele
         super.viewDidLoad()
 
         setUpTableView()
+        setUpGridView()
         setUpSearchBar()
         setUpRefreshControl()
         setUpNavigationItems()
@@ -27,13 +29,16 @@ class MoviesController: UIViewController, UITableViewDataSource, UITableViewDele
         } else {
             getTopRatedMovies()
         }
-        
-        
     }
     
     func setUpTableView() {
         tableView.delegate = self
         tableView.dataSource = self
+    }
+    
+    func setUpGridView() {
+        collectionView.delegate = self
+        collectionView.dataSource = self
     }
     
     func setUpSearchBar() {
@@ -53,6 +58,7 @@ class MoviesController: UIViewController, UITableViewDataSource, UITableViewDele
     
     func selectSearchItem() {
         navigationItem.leftBarButtonItem = nil
+        navigationItem.rightBarButtonItem = nil
         navigationItem.titleView = searchBar
         searchBar.becomeFirstResponder()
     }
@@ -64,6 +70,15 @@ class MoviesController: UIViewController, UITableViewDataSource, UITableViewDele
     
     func displayViewMode() {
         let viewImage = !gridViewEnabled ? UIImage(named: "Grid") : UIImage(named: "List")
+        
+        if (gridViewEnabled) {
+            collectionView.hidden = false
+            tableView.hidden = true
+        } else {
+            collectionView.hidden = true
+            tableView.hidden = false
+        }
+        
         navigationItem.rightBarButtonItem = UIBarButtonItem(image: viewImage, style: .Plain, target: self, action: "selectViewingMode")
     }
     
@@ -117,6 +132,8 @@ class MoviesController: UIViewController, UITableViewDataSource, UITableViewDele
         cell.title.text = movie.title
         cell.overview.text = movie.overview
         
+        cell.selectionStyle = .None
+        
         let urlRequest = NSURLRequest(URL: movie.posterUrl())
         cell.posterImage.setImageWithURLRequest(urlRequest, placeholderImage: nil,
             success: { (request:NSURLRequest,response:NSHTTPURLResponse?, image:UIImage) -> Void in
@@ -133,10 +150,41 @@ class MoviesController: UIViewController, UITableViewDataSource, UITableViewDele
         return cell
     }
     
+    func collectionView(collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
+        return filteredMovies.count
+    }
+    
+    func collectionView(collectionView: UICollectionView, cellForItemAtIndexPath indexPath: NSIndexPath) -> UICollectionViewCell {
+        let cell = collectionView.dequeueReusableCellWithReuseIdentifier("MovieCollectionCell", forIndexPath: indexPath) as! MovieCollectionCell
+        
+        let movie = filteredMovies[indexPath.row]
+        let urlRequest = NSURLRequest(URL: movie.posterUrl())
+        cell.posterImage.setImageWithURLRequest(urlRequest, placeholderImage: nil,
+            success: { (request:NSURLRequest,response:NSHTTPURLResponse?, image:UIImage) -> Void in
+                cell.posterImage.alpha = 0
+                cell.posterImage.image = image
+                [UIView .animateWithDuration(1, animations: { () -> Void in
+                    cell.posterImage.alpha = 1
+                })]
+            },
+            failure: { (request:NSURLRequest,response:NSHTTPURLResponse?, error:NSError) -> Void in
+                
+            }
+        )
+        return cell
+    }
+    
     override func prepareForSegue(segue: UIStoryboardSegue, sender: AnyObject?) {
-        let cell = sender as! UITableViewCell
-        let indexPath = tableView.indexPathForCell(cell)
-        let movie = movies[indexPath!.row]
+        var movie: Movie
+        if (gridViewEnabled) {
+            let cell = sender as! UICollectionViewCell
+            let indexPath = collectionView.indexPathForCell(cell)
+            movie = filteredMovies[indexPath!.row]
+        } else {
+            let cell = sender as! UITableViewCell
+            let indexPath = tableView.indexPathForCell(cell)
+            movie = filteredMovies[indexPath!.row]
+        }
         
         let detailViewController = segue.destinationViewController as! DetailViewController
         detailViewController.movie = movie
@@ -155,6 +203,7 @@ class MoviesController: UIViewController, UITableViewDataSource, UITableViewDele
             })
         }
         tableView.reloadData()
+        collectionView.reloadData()
     }
     
     func searchBarTextDidBeginEditing(searchBar: UISearchBar) {
@@ -166,6 +215,7 @@ class MoviesController: UIViewController, UITableViewDataSource, UITableViewDele
         searchBar.text = ""
         searchBar.resignFirstResponder()
         self.searchBar(searchBar, textDidChange: "")
+        navigationItem.titleView = nil
         setUpNavigationItems()
     }
 }
