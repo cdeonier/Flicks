@@ -29,6 +29,10 @@ class Movie {
         return NSURL(string: "http://image.tmdb.org/t/p/w500" + posterPath!)!
     }
     
+    func lowResUrl() -> NSURL {
+        return NSURL(string: "https://image.tmdb.org/t/p/w45" + posterPath!)!
+    }
+    
     class func nowPlaying(successCallback: ([Movie]) -> Void, error: ((NSError?) -> Void)?) {
         let manager = AFHTTPRequestOperationManager()
         manager.GET(nowPlayingURL, parameters: params, success: { (operation, responseObject) -> Void in

@@ -5,7 +5,7 @@ use_frameworks!
 
 target 'Flicks' do
 
-pod 'Alamofire', '~> 3.0'
+pod 'AFNetworking', '~> 2.6'
 
 end
 
